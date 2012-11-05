@@ -25,6 +25,10 @@ package path;
  */
 public interface Path
 {
+
+    public java.lang.Iterable<Operand> toPathIterable();
+
+    public java.util.Iterator<Operand> toPathIterator();
     /**
      * Clear path and define winding.
      */
@@ -42,6 +46,8 @@ public interface Path
 
     public Op op(int index);
 
+    public float[] getVerticesPath(int index, Op op, float[] vertices);
+
     public Op lop();
 
     public void add(Op op, float[] operands);
@@ -57,7 +63,7 @@ public interface Path
     public void quadTo(float x1, float y1,
                        float x2, float y2);
 
-    public void curveTo(float x1, float y1,
+    public void cubicTo(float x1, float y1,
                         float x2, float y2,
                         float x3, float y3);
 

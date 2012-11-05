@@ -17,11 +17,21 @@
  * <http://www.gnu.org/licenses/>.
  */
 package path;
+
 /**
- *
+ * {@link Path} operators have a fixed number of {@link Operand
+ * operands}.
  */
 public enum Op {
-    MoveTo, LineTo, QuadTo, CubicTo, Close;
+    MoveTo(1), LineTo(1), QuadTo(2), CubicTo(3), Close(1);
+
+
+    public final int operands;
+
+
+    private Op(int operands){
+        this.operands = operands;
+    }
 
 
     public final static Op[] Add(Op[] list, Op item){
@@ -37,4 +47,5 @@ public enum Op {
             return copier;
         }
     }
+
 }

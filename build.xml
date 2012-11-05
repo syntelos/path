@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="path" default="jar">
+<project name="path" default="update">
 
   <property name="src" value="src"/>
   <property name="bin" value="bin"/>
@@ -15,6 +15,10 @@
   <property name="compiler.target" value="1.5"/>
   <property name="compiler.debug" value="true"/>
   <property name="compiler.encoding" value="utf-8"/>
+
+  <import file="${ant}/build.in.update.xml"/>
+  <property file="${user.home}/update.properties"/>
+
 
   <macrodef name="version">
     <sequential>
@@ -38,6 +42,12 @@
 
     </sequential>
   </macrodef>
+
+
+  <target name="update" depends="jar" if="path.update">
+
+    <do-update src="${target.jar}" tgt="${path.update}"/>
+  </target>
 
 
   <target name="all" description="Rebuild all jars and perform all tests">

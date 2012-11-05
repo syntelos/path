@@ -150,7 +150,7 @@ public class Parser
         return this;
     }
 
-    public final static Path Apply(Path path, Parser p){
+    public final static <P extends Path> P Apply(P path, Parser p){
         Token last = null;
 
         float mx = 0, my = 0, sx = 0, sy = 0;
@@ -195,12 +195,12 @@ public class Parser
                 path.lineTo(sx,sy);
                 break;
             case C:
-                path.curveTo(p.getCoordinate(),p.getCoordinate(),
+                path.cubicTo(p.getCoordinate(),p.getCoordinate(),
                              p.getCoordinate(),p.getCoordinate(),
                              (sx = p.getCoordinate()),(sy = p.getCoordinate()));
                 break;
             case c:
-                path.curveTo((sx + p.getCoordinate()),(sy + p.getCoordinate()),
+                path.cubicTo((sx + p.getCoordinate()),(sy + p.getCoordinate()),
                              (sx + p.getCoordinate()),(sy + p.getCoordinate()),
                              (sx += p.getCoordinate()),(sy += p.getCoordinate()));
                 break;

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="path" default="jar">
+
+  <property name="src" value="src"/>
+  <property name="bin" value="bin"/>
+  <property name="ant" value="ant"/>
+  <property name="json.src" value="json/src"/>
+  <property name="json.lib" value="json/lib"/>
+  <property name="json.bin" value="json/bin"/>
+  <property name="test.src" value="test/src"/>
+  <property name="test.bin" value="test/bin"/>
+  <property name="dst" value="."/>
+
+  <property name="compiler.source" value="1.5"/>
+  <property name="compiler.target" value="1.5"/>
+  <property name="compiler.debug" value="true"/>
+  <property name="compiler.encoding" value="utf-8"/>
+
+  <macrodef name="version">
+    <sequential>
+      <property file="build.version" />
+      <fail unless="version.major" message="Invalid contents for file 'build.version', missing 'version.major'."/>
+      <fail unless="version.minor" message="Invalid contents for file 'build.version', missing 'version.minor'."/>
+      <fail unless="version.build" message="Invalid contents for file 'build.version', missing 'version.build'."/>
+
+      <property name="base.version" value="${version.major}.${version.minor}"/>
+
+      <condition property="this.version" value="${base.version}" else="${base.version}.${version.build}">
+        <equals arg1="0" arg2="${version.build}"/>
+      </condition>
+
+      <property name="target.jar" value="${dst}/${ant.project.name}-${this.version}.jar"/>
+
+      <echo/>
+      <echo message="Package-Version: ${ant.project.name}-${this.version}"/>
+      <echo message="Package-Jar: ${target.jar}"/>
+      <echo/>
+
+    </sequential>
+  </macrodef>
+
+
+  <target name="all" description="Rebuild all jars and perform all tests">
+
+    <antcall target="jar"/>
+    <antcall target="json"/>
+    <antcall target="test"/>
+  </target>
+
+
+  <target name="jar" depends="compile" description="Package bin to target jar, clean bin.">
+
+    <delete file="${target.jar}"/>
+    <jar jarfile="${target.jar}" basedir="${bin}" >
+    </jar>
+    <delete dir="${bin}"/>
+  </target>
+
+  <target name="compile" description="Compile src to bin">
+
+    <version/>
+
+    <delete dir="${bin}"/>
+    <mkdir dir="${bin}"/>
+    <copy todir="${bin}">
+      <fileset dir="${src}" includes="**/*.properties"/>
+      <fileset dir="${src}" includes="**/*.txt"/>
+      <fileset dir="${src}" includes="**/*.xml"/>
+    </copy>
+
+    <javac srcdir="${src}" destdir="${bin}" debug="${compiler.debug}" encoding="${compiler.encoding}"
+           source="${compiler.source}" target="${compiler.target}">
+    </javac>
+  </target>
+
+  <target name="json" depends="compile-json" description="Package bin to target jar, clean bin.">
+
+    <delete file="${target.json.jar}"/>
+    <jar jarfile="${target.json.jar}" basedir="${json.bin}" >
+      <manifest>
+        <attribute name="Class-Path" value="${lib.path.manifest}"/>
+      </manifest>
+    </jar>
+    <delete dir="${json.bin}"/>
+  </target>
+
+  <target name="compile-json" description="Compile src to bin">
+
+    <path id="json.lib.path">
+
+      <fileset dir="${json.lib}">
+        <include name="**/*.jar" />
+      </fileset>
+    </path>
+
+    <version/>
+
+    <property name="target.json.jar" value="${dst}/${ant.project.name}-json-${this.version}.jar"/>
+
+    <java outputproperty="lib.path.manifest" classpath="${ant}" classname="LibPathManifest" failonerror="true">
+      <arg value="${target.jar}"/>
+      <arg value="${toString:json.lib.path}"/>
+    </java>
+    <echo/>
+    <echo message="Package-Jar-Json: ${target.json.jar}"/>
+    <echo message="Package-Jar-Json-Class-Path: ${lib.path.manifest}"/>
+
+    <echo/>
+
+    <delete dir="${json.bin}"/>
+    <mkdir dir="${json.bin}"/>
+    <copy todir="${json.bin}">
+      <fileset dir="${json.src}" includes="**/*.properties"/>
+      <fileset dir="${json.src}" includes="**/*.txt"/>
+      <fileset dir="${json.src}" includes="**/*.xml"/>
+    </copy>
+
+    <javac srcdir="${json.src}" destdir="${json.bin}" debug="${compiler.debug}" encoding="${compiler.encoding}"
+           source="${compiler.source}" target="${compiler.target}">
+      <classpath>
+        <path location="${target.jar}"/>
+        <path refid="json.lib.path"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="test" depends="jar-test" description="Package and run tests.">
+
+    <antcall target="test-random"/>
+    <antcall target="test-stringio"/>
+
+  </target>
+
+  <target name="test-random" depends="jar-test" description="Package and run tests.">
+
+    <java classpath="${target.test.jar}" classname="Random" fork="true" failOnError="true">
+    </java>
+
+  </target>
+
+  <target name="test-stringio" depends="jar-test" description="Package and run tests.">
+
+    <java classpath="${target.test.jar}" classname="StringIO" fork="true" failOnError="true">
+    </java>
+
+  </target>
+
+  <target name="jar-test" depends="compile-test" description="Package bin to target jar, clean bin.">
+
+    <delete file="${target.test.jar}"/>
+    <jar jarfile="${target.test.jar}" basedir="${test.bin}" >
+      <manifest>
+        <attribute name="Main-Class" value="Random"/>
+        <attribute name="Class-Path" value="${lib.path.manifest}"/>
+      </manifest>
+    </jar>
+    <delete dir="${test.bin}"/>
+  </target>
+
+  <target name="compile-test" description="Compile src to bin">
+
+    <version/>
+
+    <property name="target.test.jar" value="${dst}/${ant.project.name}-test-${this.version}.jar"/>
+
+    <java outputproperty="lib.path.manifest" classpath="${ant}" classname="LibPathManifest" failonerror="true">
+      <arg value="${target.jar}"/>
+    </java>
+    <echo/>
+    <echo message="Package-Jar-Test: ${target.test.jar}"/>
+    <echo message="Package-Jar-Test-Class-Path: ${lib.path.manifest}"/>
+
+    <echo/>
+
+    <delete dir="${test.bin}"/>
+    <mkdir dir="${test.bin}"/>
+    <copy todir="${test.bin}">
+      <fileset dir="${test.src}" includes="**/*.properties"/>
+      <fileset dir="${test.src}" includes="**/*.txt"/>
+      <fileset dir="${test.src}" includes="**/*.xml"/>
+    </copy>
+
+    <javac srcdir="${test.src}" destdir="${test.bin}" debug="${compiler.debug}" encoding="${compiler.encoding}"
+           source="${compiler.source}" target="${compiler.target}">
+      <classpath>
+        <path location="${target.jar}"/>
+
+      </classpath>
+    </javac>
+  </target>
+
+
+</project>

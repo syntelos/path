@@ -78,4 +78,45 @@ public class Operand
             throw new IllegalArgumentException();
     }
 
+
+    public StringBuilder format(StringBuilder string){
+        switch(this.op){
+        case MoveTo:
+            string.append('M');
+            break;
+        case LineTo:
+            string.append('L');
+            break;
+        case QuadTo:
+            string.append('Q');
+            break;
+        case CubicTo:
+            string.append('C');
+            break;
+        case Close:
+            string.append('Z');
+            break;
+        default:
+            throw new IllegalStateException(this.op.name());
+        }
+
+        return Format(this.vertices,string);
+    }
+    public String toString(){
+
+        return this.format(new StringBuilder()).toString();
+    }
+
+    public final static StringBuilder Format(float[] vertices, StringBuilder string){
+        boolean once = true;
+        for (float value : vertices){
+            if (once)
+                once = false;
+            else
+                string.append(',');
+
+            string.append(String.format("%f",value));
+        }
+        return string;
+    }
 }

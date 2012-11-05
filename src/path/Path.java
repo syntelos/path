@@ -72,5 +72,20 @@ public interface Path
     public Path apply(String pexpr);
 
     public Path apply(Parser p);
-
+    /**
+     * Clear existing path data - state
+     */
+    public void reset();
+    /**
+     * Reset and copy
+     */
+    public void set(Path path);
+    /**
+     * Append
+     */
+    public void add(Path path);
+    /**
+     * @return In format of attribute 'd' of SVG Element 'Path'.
+     */
+    public String toString();
 }

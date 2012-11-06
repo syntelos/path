@@ -36,6 +36,8 @@ public class Operand
 
 
     /**
+     * First simple operand ctor with no dependencies.
+     * 
      * @param op Operator
      * @param vertices User copy of operands to operator.  This ctor
      * does not clone the argument, but passes the argument (by
@@ -54,7 +56,8 @@ public class Operand
             throw new IllegalArgumentException();
     }
     /**
-     * Calls {@link Path#getVerticesPath Path getVerticesPath}
+     * Second operand ctor used by Fv3 calls {@link
+     * Path#getVerticesPath Path getVerticesPath}.
      * 
      * @param path Using {@link Path#getVerticesPath Path
      * getVerticesPath}

@@ -43,25 +43,27 @@ public interface Path
     public Path setWindingNonZero();
 
     public Path setWindingEvenOdd();
-
-    public Op op(int index);
-
+    /**
+     * Called by second {@link Operand} ctor, used by Fv3
+     */
     public float[] getVerticesPath(int index, Op op, float[] vertices);
-
-    public Op lop();
 
     public void add(Op op, float[] operands);
 
-    public int lindexOf(Op op);
-
-    public boolean valid(int index);
+    public void moveTo(float[] operands);
 
     public void moveTo(float x, float y);
 
+    public void lineTo(float[] operands);
+
     public void lineTo(float x, float y);
+
+    public void quadTo(float[] operands);
 
     public void quadTo(float x1, float y1,
                        float x2, float y2);
+
+    public void cubicTo(float[] operands);
 
     public void cubicTo(float x1, float y1,
                         float x2, float y2,

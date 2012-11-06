@@ -46,7 +46,20 @@ package path;
  * Future} represents and unknown, wait and see status. </p>
  */
 public enum Winding {
-    EvenOdd, NonZero, Future;
+    EvenOdd("even-odd"), NonZero("non-zero"), Future("future");
+
+
+    public final String label;
+
+
+    private Winding(String label){
+        this.label = label;
+    }
+
+
+    public String toString(){
+        return this.label;
+    }
 
 
     public final static Winding For(int rule){
@@ -58,6 +71,19 @@ public enum Winding {
         default:
             return null;
         }
+    }
+    private final static java.util.Map<String,Winding> Map = new java.util.HashMap<String,Winding>();
+    static {
+        for (Winding w: Winding.values()){
+
+            Map.put(w.name().toUpperCase(),w);
+
+            Map.put(w.label.toUpperCase(),w);
+        }
+    }
+    public final static Winding For(String name){
+
+        return Map.get(name.toUpperCase());
     }
 
     /**

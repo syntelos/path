@@ -24,4 +24,36 @@ package path;
  */
 public enum Token {
     Unknown, Coordinate, M, m, Z, z, L, l, H, h, V, v, C, c, S, s, Q, q, T, t, A, a;
+
+
+    public Op opfor(){
+        switch(this){
+        case M:
+        case m:
+            return Op.MoveTo;
+        case Z:
+        case z:
+            return Op.Close;
+        case L:
+        case l:
+            return Op.LineTo;
+        case H:
+        case h:
+        case V:
+        case v:
+            return Op.MoveTo;
+        case C:
+        case c:
+            return Op.CubicTo;
+        case Q:
+        case q:
+            return Op.QuadTo;
+        default:
+            throw new IllegalStateException(this.name());
+        }
+    }
+    public String format(float[] operands){
+
+        return (this.name()+this.opfor().format(operands));
+    }
 }

@@ -83,6 +83,16 @@ public class Operand
 
 
     public StringBuilder format(StringBuilder string){
+        /*
+         * Prefix
+         */
+        if (0 < string.length()){
+
+            string.append(' ');
+        }
+        /*
+         * Operator
+         */
         switch(this.op){
         case MoveTo:
             string.append('M');
@@ -102,24 +112,15 @@ public class Operand
         default:
             throw new IllegalStateException(this.op.name());
         }
+        /*
+         * Operands
+         */
+        string.append(this.op.format(this.vertices));
 
-        return Format(this.vertices,string);
+        return string;
     }
     public String toString(){
 
         return this.format(new StringBuilder()).toString();
-    }
-
-    public final static StringBuilder Format(float[] vertices, StringBuilder string){
-        boolean once = true;
-        for (float value : vertices){
-            if (once)
-                once = false;
-            else
-                string.append(',');
-
-            string.append(String.format("%f",value));
-        }
-        return string;
     }
 }

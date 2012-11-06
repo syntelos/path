@@ -34,6 +34,32 @@ public enum Op {
     }
 
 
+    public String format(float[] operands){
+        if (null == operands || 1 > operands.length)
+            return "";
+        else {
+            switch(operands.length){
+            case 1:
+                return String.format("%4.4f",operands[0]);
+            case 2:
+            case 3:
+                return String.format("%4.4f,%4.4f",operands[0],operands[1]);
+
+            case 4:
+                return String.format("%4.4f,%4.4f,%4.4f,%4.4f",operands[0],operands[1],operands[2],operands[3]);
+            case 6:
+                if (QuadTo == this)
+                    return String.format("%4.4f,%4.4f,%4.4f,%4.4f",operands[0],operands[1],operands[3],operands[4]);
+                else
+                    return String.format("%4.4f,%4.4f,%4.4f,%4.4f",operands[0],operands[1],operands[2],operands[3],operands[4],operands[5]);
+            case 8:
+                return String.format("%4.4f,%4.4f,%4.4f,%4.4f",operands[0],operands[1],operands[3],operands[4],operands[6],operands[7]);
+            default:
+                throw new IllegalArgumentException(String.valueOf(operands.length));
+            }
+        }
+    }
+
     public final static Op[] Add(Op[] list, Op item){
         if (null == item)
             return list;

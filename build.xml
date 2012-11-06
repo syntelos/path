@@ -136,21 +136,12 @@
 
   <target name="test" depends="jar-test" description="Package and run tests.">
 
-    <antcall target="test-random"/>
-    <antcall target="test-stringio"/>
-
+    <antcall target="test-apply"/>
   </target>
 
-  <target name="test-random" depends="jar-test" description="Package and run tests.">
+  <target name="test-apply" depends="jar-test" description="Package and run tests.">
 
-    <java classpath="${target.test.jar}" classname="Random" fork="true" failOnError="true">
-    </java>
-
-  </target>
-
-  <target name="test-stringio" depends="jar-test" description="Package and run tests.">
-
-    <java classpath="${target.test.jar}" classname="StringIO" fork="true" failOnError="true">
+    <java classpath="${target.test.jar}" classname="Apply" fork="true" failOnError="true">
     </java>
 
   </target>
@@ -160,7 +151,7 @@
     <delete file="${target.test.jar}"/>
     <jar jarfile="${target.test.jar}" basedir="${test.bin}" >
       <manifest>
-        <attribute name="Main-Class" value="Random"/>
+        <attribute name="Main-Class" value="Apply"/>
         <attribute name="Class-Path" value="${lib.path.manifest}"/>
       </manifest>
     </jar>

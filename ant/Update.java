@@ -162,12 +162,19 @@ public class Update
                                             /*
                                              * Copy source to target
                                              */
-                                            FileChannel target = new FileOutputStream(tgt).getChannel();
                                             try {
-                                                source.transferTo(0L,srclen,target);
+                                                FileChannel target = new FileOutputStream(tgt).getChannel();
+                                                try {
+                                                    source.transferTo(0L,srclen,target);
+                                                }
+                                                finally {
+                                                    target.close();
+                                                }
                                             }
-                                            finally {
-                                                target.close();
+                                            catch (java.io.FileNotFoundException exc){
+                                                System.err.printf("File not found: %s%n",tgt.getAbsolutePath());
+                                                exc.printStackTrace();
+                                                System.exit(1);
                                             }
                                             /*
                                              * Delete old versions
@@ -195,6 +202,11 @@ public class Update
                                     finally {
                                         source.close();
                                     }
+                                }
+                                catch (java.io.FileNotFoundException exc){
+                                    System.err.printf("File not found: %s%n",src.getAbsolutePath());
+                                    exc.printStackTrace();
+                                    System.exit(1);
                                 }
                                 catch (Exception exc){
                                     exc.printStackTrace();
@@ -235,6 +247,7 @@ public class Update
                 }
             }
             catch (IOException exc){
+                System.err.printf("File: %s%n",file);
                 exc.printStackTrace();
                 System.exit(1);
             }
@@ -646,14 +659,20 @@ public class Update
     private final static File[] Target(File src, String tgts){
         File[] list = null;
 
-        for (File tgt : PropertyFiles(tgts)){
+        final String name = src.getName();
+        if (null != name){
 
-            if (tgt.isDirectory()){
-                tgt = new File(tgt,src.getName());
-            }
+            for (File tgt : PropertyFiles(tgts)){
+
+                if (tgt.isDirectory()){
+                    tgt = new File(tgt,name);
 		
-            if (!tgt.getAbsolutePath().equals(src.getAbsolutePath()))
-                list = Add(list,tgt);
+                    if (!tgt.getAbsolutePath().equals(src.getAbsolutePath())){
+
+                        list = Add(list,tgt);
+                    }
+                }
+            }
         }
         return list;
     }

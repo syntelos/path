@@ -248,7 +248,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 path.moveTo((mx = x0),(my = y0));
 
@@ -272,7 +272,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 path.moveTo((mx += x0),(my += y0));
 
@@ -305,7 +305,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 path.lineTo((sx = x0),(sy = y0));
 
@@ -328,7 +328,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 path.lineTo((sx += x0),(sy += y0));
 
@@ -351,7 +351,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 sx = x0;
 
@@ -376,7 +376,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 sx += x0;
 
@@ -403,7 +403,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 sy = y0;
 
@@ -430,7 +430,7 @@ public class Parser
                     break;
 
                 default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
                 }
                 sy += y0;
 
@@ -457,6 +457,12 @@ public class Parser
 
                        x2 = operands[4];
                        y2 = operands[5];
+
+                       path.cubicTo(x0,y0,x1,y1,x2,y2);
+
+                       sx = x2;
+                       sy = y2;
+
                        break;
 
                 case 8:
@@ -468,15 +474,40 @@ public class Parser
 
                        x2 = operands[6];
                        y2 = operands[7];
+
+                       path.cubicTo(x0,y0,x1,y1,x2,y2);
+
+                       sx = x2;
+                       sy = y2;
+
                        break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
-                }
-                path.cubicTo(x0,y0,x1,y1,x2,y2);
+                default:{
+                    /*
+                     * 2D poly-bezier
+                     */
+                    final int polylen = operands.length;
 
-                sx = x2;
-                sy = y2;
+                    for (int ofs = 0; ofs < polylen; ofs += 6){
+                        x0 = operands[ofs+0];
+                        y0 = operands[ofs+1];
+
+                        x1 = operands[ofs+2];
+                        y1 = operands[ofs+3];
+
+                        x2 = operands[ofs+4];
+                        y2 = operands[ofs+5];
+
+                        path.cubicTo(x0,y0,x1,y1,x2,y2);
+
+                        sx = x2;
+                        sy = y2;
+
+                    }
+
+                    break;
+                }
+                }
 
 
                 if (Debug)
@@ -499,6 +530,11 @@ public class Parser
 
                        x2 = operands[4]+sx;
                        y2 = operands[5]+sy;
+
+                       path.cubicTo(x0,y0,x1,y1,x2,y2);
+
+                       sx = x2;
+                       sy = y2;
                        break;
 
                 case 8:
@@ -510,16 +546,40 @@ public class Parser
 
                        x2 = operands[6]+sx;
                        y2 = operands[7]+sy;
+
+                       path.cubicTo(x0,y0,x1,y1,x2,y2);
+
+                       sx = x2;
+                       sy = y2;
                        break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                default:{
+                    /*
+                     * 2D poly-bezier
+                     */
+                    final int polylen = operands.length;
+
+                    for (int ofs = 0; ofs < polylen; ofs += 6){
+                        x0 = operands[ofs+0]+sx;
+                        y0 = operands[ofs+1]+sy;
+
+                        x1 = operands[ofs+2]+sx;
+                        y1 = operands[ofs+3]+sy;
+
+                        x2 = operands[ofs+4]+sx;
+                        y2 = operands[ofs+5]+sy;
+
+                        path.cubicTo(x0,y0,x1,y1,x2,y2);
+
+                        sx = x2;
+                        sy = y2;
+
+                    }
+
+                    break;
+                }
                 }
 
-                path.cubicTo(x0,y0,x1,y1,x2,y2);
-
-                sx = x2;
-                sy = y2;
 
 
                 if (Debug)
@@ -541,6 +601,11 @@ public class Parser
 
                        x1 = operands[2];
                        y1 = operands[3];
+
+                       path.quadTo(x0,y0,x1,y1);
+
+                       sx = x1;
+                       sy = y1;
                        break;
 
                 case 6:
@@ -549,15 +614,35 @@ public class Parser
 
                        x1 = operands[3];
                        y1 = operands[4];
+
+                       path.quadTo(x0,y0,x1,y1);
+
+                       sx = x1;
+                       sy = y1;
                        break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
-                }
-                path.quadTo(x0,y0,x1,y1);
+                default:{
+                    /*
+                     * 2D poly-bezier
+                     */
+                    final int polylen = operands.length;
 
-                sx = x1;
-                sy = y1;
+                    for (int ofs = 0; ofs < polylen; ofs += 4){
+                        x0 = operands[ofs+0];
+                        y0 = operands[ofs+1];
+
+                        x1 = operands[ofs+2];
+                        y1 = operands[ofs+3];
+
+                        path.quadTo(x0,y0,x1,y1);
+
+                        sx = x1;
+                        sy = y1;
+                    }
+
+                    break;
+                }
+                }
 
 
                 if (Debug)
@@ -577,6 +662,11 @@ public class Parser
 
                        x1 = operands[2]+sx;
                        y1 = operands[3]+sy;
+
+                       path.quadTo(x0,y0,x1,y1);
+
+                       sx = x1;
+                       sy = y1;
                        break;
 
                 case 6:
@@ -585,16 +675,36 @@ public class Parser
 
                        x1 = operands[3]+sx;
                        y1 = operands[4]+sy;
+
+                       path.quadTo(x0,y0,x1,y1);
+
+
+                       sx = x1;
+                       sy = y1;
                        break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("Operands-dimension not 2 or 3: %d",operands.length));
+                default:{
+                    /*
+                     * 2D poly-bezier
+                     */
+                    final int polylen = operands.length;
+
+                    for (int ofs = 0; ofs < polylen; ofs += 4){
+                        x0 = operands[ofs+0]+sx;
+                        y0 = operands[ofs+1]+sy;
+
+                        x1 = operands[ofs+2]+sx;
+                        y1 = operands[ofs+3]+sy;
+
+                        path.quadTo(x0,y0,x1,y1);
+
+                        sx = x1;
+                        sy = y1;
+                    }
+
+                    break;
                 }
-                path.quadTo(x0,y0,x1,y1);
-
-                sx = x1;
-                sy = y1;
-
+                }
 
                 if (Debug)
                     Out.printf("path.Parser APPLY(%s)%n",tok.format(operands));

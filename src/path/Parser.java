@@ -245,15 +245,35 @@ public class Parser
                 case 3:
                     x0 = operands[0];
                     y0 = operands[1];
+
+                    path.moveTo(x0,y0);
+
+                    mx = x0;
+                    my = y0;
+
+                    sx = mx;
+                    sy = my;
+
                     break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
-                }
-                path.moveTo((mx = x0),(my = y0));
+                default:{
+                    final int polylen = operands.length;
+                    for (int ofs = 0; ofs < polylen; ofs += 2){
+                        x0 = operands[ofs+0];
+                        y0 = operands[ofs+1];
 
-                sx = mx;
-                sy = my;
+                        path.moveTo(x0,y0);
+
+                        mx = x0;
+                        my = y0;
+
+                        sx = mx;
+                        sy = my;
+
+                    }
+                    break;
+                }
+                }
 
                 if (Debug)
                     Out.printf("path.Parser APPLY(%s)%n",tok.format(operands));
@@ -267,17 +287,37 @@ public class Parser
                 switch(operands.length){
                 case 2:
                 case 3:
-                    x0 = operands[0];
-                    y0 = operands[1];
+                    x0 = operands[0]+mx;
+                    y0 = operands[1]+my;
+
+                    path.moveTo(x0,y0);
+
+                    mx = x0;
+                    my = y0;
+
+                    sx = mx;
+                    sy = my;
+
                     break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
-                }
-                path.moveTo((mx += x0),(my += y0));
+                default:{
+                    final int polylen = operands.length;
+                    for (int ofs = 0; ofs < polylen; ofs += 2){
+                        x0 = operands[ofs+0]+mx;
+                        y0 = operands[ofs+1]+my;
 
-                sx = mx;
-                sy = my;
+                        path.moveTo(x0,y0);
+
+                        mx = x0;
+                        my = y0;
+
+                        sx = mx;
+                        sy = my;
+
+                    }
+                    break;
+                }
+                }
 
 
                 if (Debug)
@@ -302,12 +342,30 @@ public class Parser
                 case 3:
                     x0 = operands[0];
                     y0 = operands[1];
+
+                    path.lineTo(x0,y0);
+
+                    sx = x0;
+                    sy = y0;
                     break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
+                default:{
+                    final int polylen = operands.length;
+
+                    for (int ofs = 0; ofs < polylen; ofs += 2){
+                        x0 = operands[ofs+0];
+                        y0 = operands[ofs+1];
+
+                        path.lineTo(x0,y0);
+
+                        sx = x0;
+                        sy = y0;
+                    }
+                    break;
                 }
-                path.lineTo((sx = x0),(sy = y0));
+
+                }
+
 
 
                 if (Debug)
@@ -323,14 +381,31 @@ public class Parser
                 switch(operands.length){
                 case 2:
                 case 3:
-                    x0 = operands[0];
-                    y0 = operands[1];
+                    x0 = operands[0]+sx;
+                    y0 = operands[1]+sy;
+
+                    path.lineTo(x0,y0);
+
+                    sx = x0;
+                    sy = y0;
                     break;
 
-                default:
-                    throw new IllegalArgumentException(String.format("TODO operands: %d",operands.length));
+                default:{
+                    final int polylen = operands.length;
+
+                    for (int ofs = 0; ofs < polylen; ofs += 2){
+                        x0 = operands[ofs+0]+sx;
+                        y0 = operands[ofs+1]+sy;
+
+                        path.lineTo(x0,y0);
+
+                        sx = x0;
+                        sy = y0;
+                    }
+                    break;
                 }
-                path.lineTo((sx += x0),(sy += y0));
+                }
+
 
 
                 if (Debug)

@@ -42,8 +42,8 @@ package path;
  * 
  * <h3>Future</h3>
  * 
- * <p> The Winding enum constant {@link Path$Winding#Future
- * Future} represents and unknown, wait and see status. </p>
+ * <p> The Winding enum constant {@link Path$Winding#Future Future}
+ * represents an "unknown, wait and see" state. </p>
  */
 public enum Winding {
     EvenOdd("even-odd"), NonZero("non-zero"), Future("future");

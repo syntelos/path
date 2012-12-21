@@ -62,6 +62,16 @@ public enum Winding {
     }
 
 
+    /**
+     * SVG's default winding rule for path "fill-rule" and "clip-path"
+     * is "non-zero".
+     * 
+     * @see http://www.w3.org/TR/SVG/painting.html#FillProperties
+     * @see http://www.w3.org/TR/SVG/masking.html#ClipPathElement
+     */
+    public final static Winding Default = NonZero;
+
+
     public final static Winding For(int rule){
         switch(rule){
         case 0:
@@ -81,6 +91,10 @@ public enum Winding {
             Map.put(w.label.toUpperCase(),w);
         }
     }
+    /**
+     * Case insensitive "evenodd", "even-odd", "nonzero" and
+     * "non-zero".
+     */
     public final static Winding For(String name){
 
         return Map.get(name.toUpperCase());
